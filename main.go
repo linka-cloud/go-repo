@@ -86,7 +86,5 @@ func main() {
 	}
 	cmd.Flags().StringVarP(&address, "address", "a", ":8888", "The server address")
 	cmd.Flags().StringVar(&level, "logs-level", "info", "")
-	if err := cmd.Execute(); err != nil {
-		logrus.Fatal(err)
-	}
+	cmd.Execute()
 }

@@ -5,15 +5,14 @@ import (
 	"html/template"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"path"
 	"strings"
 	"sync"
 
+	"github.com/ghodss/yaml"
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/parser"
 	"go.uber.org/multierr"
-	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -57,13 +56,12 @@ func (m *Module) LoadReadme() error {
 }
 
 func NewModules(path string) (Modules, error) {
-	f, err := os.Open(path)
+	b, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
 	c := &Config{}
-	if err := yaml.NewDecoder(f).Decode(c); err != nil {
+	if err := yaml.Unmarshal(b, c); err != nil {
 		return nil, err
 	}
 	return c.Modules, nil
