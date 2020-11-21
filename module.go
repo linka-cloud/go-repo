@@ -80,8 +80,8 @@ func (m *Modules) Find(name string) (*Module, bool) {
 }
 
 func (m *Modules) LoadReadme() error {
-	mu.RLock()
-	defer mu.RUnlock()
+	mu.Lock()
+	defer mu.Unlock()
 	errs := make(chan error, len(*m))
 	for _, v := range *m {
 		go func(mod *Module) {

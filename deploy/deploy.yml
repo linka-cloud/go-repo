@@ -17,7 +17,7 @@ spec:
         args:
           - /config/config.yml
         image: adphi/go-repo
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
           - containerPort: 8888
         volumeMounts:
