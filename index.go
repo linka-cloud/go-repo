@@ -1,3 +1,6 @@
+package main
+
+const index = `
 <!DOCTYPE html>
 <html>
     <head>
@@ -15,15 +18,15 @@
                         </tr>
                     </thead>
                     <tbody>
-        
+
                         {{- range . }}
                         <tr>
-                            <td>{{ .Package }}</td>
+                            <td>{{ .Import }}</td>
                             <td>
                                 <a href="//{{ .Repository }}">{{ .Repository }}</a>
                             </td>
                             <td>
-                                <a href="//pkg.go.dev/{{ .Package }}">
+                                <a href="//pkg.go.dev/{{ .Import }}">
                                     <img src="//img.shields.io/badge/godoc-reference-blue?style=for-the-badge" alt="GoDoc" />
                                 </a>
                             </td>
@@ -35,3 +38,4 @@
         </div>
     </body>
 </html>
+`
