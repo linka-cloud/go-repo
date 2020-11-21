@@ -1,0 +1,4 @@
+modules:
+- import: go.adphi.net/go-repo
+  repository: git.adphi.net/adphi/go-repo
+  readme: git.adphi.net/adphi/go-repo/raw/master/README.md

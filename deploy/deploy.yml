@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-repo
+  labels:
+    app: go-repo
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: go-repo
+      labels:
+        app: go-repo
+    spec:
+      containers:
+      - name: go-repo
+        args:
+          - /config/config.yml
+        image: adphi/go-repo
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - mountPath: /config
+            name: config
+      restartPolicy: Always
+      volumes:
+        - name: config
+          configMap:
+            name: go-repo
+  selector:
+    matchLabels:
+      app: go-repo
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: go-repo
+data:
+  config.yml: |
+    modules:
+    - import: go.adphi.net/go-repo
+      repository: git.adphi.net/adphi/go-repo
+      readme: git.adphi.net/adphi/go-repo/raw/master/README.md
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-repo
+spec:
+  selector:
+    app: go-repo
+  ports:
+  - port: 8888
+  type: LoadBalancer
