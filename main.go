@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"path/filepath"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/sirupsen/logrus"
@@ -24,7 +25,11 @@ func main() {
 			if l, err := logrus.ParseLevel(level); err == nil {
 				logrus.SetLevel(l)
 			}
-			mods, err := NewModules(args[0])
+			path := args[0]
+			if s, err := filepath.EvalSymlinks(path); err == nil {
+				path = s
+			}
+			mods, err := NewModules(path)
 			if err != nil {
 			    logrus.Fatal(err)
 			}
@@ -69,7 +74,7 @@ func main() {
 					}
 				}
 			}()
-			if err := watcher.Add(args[0]); err != nil {
+			if err := watcher.Add(path); err != nil {
 				logrus.Fatal(err)
 			}
 			go func() {

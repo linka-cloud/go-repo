@@ -18,6 +18,8 @@ spec:
           - /config/config.yml
         image: adphi/go-repo
         imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 8888
         volumeMounts:
           - mountPath: /config
             name: config
@@ -51,5 +53,6 @@ spec:
   selector:
     app: go-repo
   ports:
-  - port: 8888
+  - port: 80
+    targetPort: 8888
   type: LoadBalancer
