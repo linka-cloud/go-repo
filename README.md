@@ -2,8 +2,19 @@
 
 *go-repo* is a simple golang repository hosting web app, heavily inspired by [go.uber.org](https://go.uber.org).
 
-It allows hosting go modules with custom import names, 
-e.g. `go.adphi.net/go-repo` instead of `git.adphi.net/adphi/go-repo`. 
+It allows hosting go modules with custom import names.
+
+Example :
+
+```bash
+$ go get go.adphi.net/go-repo
+```
+
+instead of 
+
+```bash
+$ go get git.adphi.net/adphi/go-repo
+```
 
 ## Installation
 ```bash
@@ -46,3 +57,11 @@ Run the app:
 ```bash
 $ go-repo config.yml
 ```
+
+## Screenshots
+
+The origin display the available packages index 
+![index](screenshots/index.png)
+
+The details page display the README.md from configuration
+![details](screenshots/details.png)
