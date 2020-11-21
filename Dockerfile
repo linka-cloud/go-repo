@@ -16,6 +16,8 @@ RUN apk add ca-certificates
 
 COPY --from=builder /go/go.adphi.net/go-repo/go-repo /usr/bin/
 
+USER nobody
+
 EXPOSE 8888
 
 ENTRYPOINT ["/usr/bin/go-repo"]
