@@ -1,4 +1,4 @@
-module go.adphi.net/gorepo
+module go.adphi.net/go-repo
 
 go 1.14
 
