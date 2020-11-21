@@ -13,6 +13,22 @@ var (
 	modules = Modules{}
 )
 
+func loadConfig() error {
+	conf := &Config{}
+	if err := viper.Unmarshal(conf); err != nil {
+		return err
+	}
+	mu.Lock()
+	modules = conf.Modules
+	mu.Unlock()
+	go func() {
+		if err := modules.LoadReadme(); err != nil {
+			logrus.WithError(err).Error("failed to load all readme")
+		}
+	}()
+	return nil
+}
+
 func main() {
 	var address string
 	var level string
@@ -30,34 +46,15 @@ func main() {
 			if err := viper.ReadInConfig(); err != nil {
 				logrus.Fatal(err)
 			}
-			conf := &Config{}
-			if err := viper.Unmarshal(conf); err != nil {
-				mu.Unlock()
+			if err := loadConfig(); err != nil {
 				logrus.Fatal(err)
 			}
-			mu.Lock()
-			modules = conf.Modules
-			mu.Unlock()
-			go func() {
-				if err := modules.LoadReadme(); err != nil {
-					logrus.WithError(err).Error("failed to load all readme")
-				}
-			}()
 			viper.WatchConfig()
 			viper.OnConfigChange(func(event fsnotify.Event) {
-				mu.Lock()
-				var err error
-				modules, err = NewModules(event.Name)
-				if err != nil {
+				if err := loadConfig(); err != nil {
 					logrus.Fatal(err)
 				}
-				mu.Unlock()
 				logrus.Info("modules reloaded")
-				go func() {
-					if err := modules.LoadReadme(); err != nil {
-						logrus.WithError(err).Error("failed to load all readme")
-					}
-				}()
 			})
 
 			http.HandleFunc("/", modulesHandler)
