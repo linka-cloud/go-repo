@@ -25,13 +25,12 @@ func modulesHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	default:
-		mPath := strings.Split(r.URL.Path, "/")[1]
-		m, ok := modules.Find(path.Base(mPath))
+		m, ok := modules.Find(r.URL.Path)
 		if !ok {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
-		if parts := strings.Split(r.URL.Path, "/"); len(parts) > 2  && parts[2] != ""{
+		if rest := strings.TrimPrefix(r.URL.Path, m.name()); strings.TrimSuffix(rest, "/") != "" {
 			url, err := url2.ParseRequestURI(m.Readme)
 			if err != nil {
 				logrus.Errorf("parse readme url: %v", err)
@@ -39,7 +38,7 @@ func modulesHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			baseParts := strings.Split(url.Path, "/")
-			url.Path = strings.Join(baseParts[:len(baseParts)-1], "/") + "/" + strings.Join(parts[2:], "/")
+			url.Path = path.Join(append(baseParts[:len(baseParts)-1], rest)...)
 			res, err := http.Get(url.String())
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)

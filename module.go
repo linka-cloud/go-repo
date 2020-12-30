@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"net/http"
-	"path"
+	"net/url"
 	"strings"
 	"sync"
 
@@ -24,10 +24,18 @@ type Config struct {
 }
 
 type Module struct {
-	Import     string `json:"import"`
-	Repository string `json:"repository"`
-	Readme     string `json:"readme"`
+	Import     string        `json:"import"`
+	Repository string        `json:"repository"`
+	Readme     string        `json:"readme"`
 	ReadmeHTML template.HTML `json:"-"`
+}
+
+func (m Module) name() string {
+	u, err := url.Parse("https://" + m.Import)
+	if err != nil {
+		return ""
+	}
+	return u.Path
 }
 
 func (m *Module) LoadReadme() error {
@@ -70,12 +78,8 @@ func NewModules(path string) (Modules, error) {
 type Modules []*Module
 
 func (m *Modules) Find(name string) (*Module, bool) {
-	if parts := strings.Split(name, "/"); len(parts) > 1 {
-		name = parts[0]
-	}
 	for _, v := range *m {
-		mod := path.Base(v.Import)
-		if mod == name {
+		if strings.HasPrefix(name, v.name()) {
 			return v, true
 		}
 	}
