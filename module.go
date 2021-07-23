@@ -51,7 +51,7 @@ func (m *Module) LoadReadme() error {
 	}
 	defer res.Body.Close()
 	if res.StatusCode > 300 {
-		return fmt.Errorf("request failed: %s (%d)", res.Status, res.StatusCode)
+		return fmt.Errorf("%s: request failed: %s (%d)", m.name(), res.Status, res.StatusCode)
 	}
 	b, err := ioutil.ReadAll(res.Body)
 	if err != nil {
