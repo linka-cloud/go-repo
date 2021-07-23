@@ -7,18 +7,18 @@ It allows hosting go modules with custom import names.
 Example :
 
 ```bash
-$ go get go.adphi.net/go-repo
+$ go get go.linka.cloud/go-repo
 ```
 
 instead of 
 
 ```bash
-$ go get git.adphi.net/adphi/go-repo
+$ go get github.com/linka-cloud/go-repo
 ```
 
 ## Installation
 ```bash
-$ docker pull adphi/go-repo
+$ docker pull linkacloud/go-repo
 ```
 
 ## Deployment
@@ -46,9 +46,9 @@ Flags:
 An example config file:
 ```yaml
 modules:
-- import: go.adphi.net/go-repo
-  repository: git.adphi.net/adphi/go-repo
-  readme: git.adphi.net/adphi/go-repo/raw/master/README.md
+- import: go.linka.cloud/go-repo
+  repository: github.com/linka-cloud/go-repo
+  readme: github.com/linka-cloud/go-repo/raw/master/README.md
 ```
 The config file is reloaded on changes
 

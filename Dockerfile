@@ -1,6 +1,6 @@
 FROM golang:alpine as builder
 
-WORKDIR /go/go.adphi.net/go-repo
+WORKDIR /go/go.linka.cloud/go-repo
 
 COPY go.mod .
 
@@ -14,7 +14,7 @@ FROM alpine
 
 RUN apk add ca-certificates
 
-COPY --from=builder /go/go.adphi.net/go-repo/go-repo /usr/bin/
+COPY --from=builder /go/go.linka.cloud/go-repo/go-repo /usr/bin/
 
 USER nobody
 

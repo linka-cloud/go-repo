@@ -16,7 +16,7 @@ spec:
       - name: go-repo
         args:
           - /config/config.yml
-        image: adphi/go-repo
+        image: linkacloud/go-repo
         imagePullPolicy: Always
         ports:
           - containerPort: 8888
@@ -40,9 +40,9 @@ metadata:
 data:
   config.yml: |
     modules:
-    - import: go.adphi.net/go-repo
-      repository: git.adphi.net/adphi/go-repo
-      readme: git.adphi.net/adphi/go-repo/raw/master/README.md
+    - import: go.linka.cloud/go-repo
+      repository: github.com/linka-cloud/go-repo
+      readme: github.com/linka-cloud/go-repo/raw/master/README.md
 
 ---
 apiVersion: v1
