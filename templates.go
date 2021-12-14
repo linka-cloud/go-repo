@@ -24,9 +24,12 @@ var (
 	index string
 	//go:embed templates/package.gohtml
 	pkg string
+	//go:embed templates/header.gohtml
+	header string
 )
 
 var (
 	indexTemplate  = template.Must(template.New("index.gohtml").Parse(index))
 	moduleTemplate = template.Must(template.New("package.gohtml").Parse(pkg))
+	headerTemplate = template.Must(template.New("header.gohtml").Parse(header))
 )

@@ -50,7 +50,7 @@ func modulesHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		if r.Form.Get("go-get") == "1" {
 			w.Header().Set("content-type", "text/html")
-			if err := moduleTemplate.Execute(w, m); err != nil {
+			if err := headerTemplate.Execute(w, m); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 			return
