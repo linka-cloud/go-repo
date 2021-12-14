@@ -1,6 +1,6 @@
 module go.linka.cloud/go-repo
 
-go 1.14
+go 1.16
 
 require (
 	github.com/fsnotify/fsnotify v1.4.9

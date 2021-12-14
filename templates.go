@@ -15,7 +15,15 @@
 package main
 
 import (
+	_ "embed"
 	"html/template"
+)
+
+var (
+	//go:embed templates/index.gohtml
+	index string
+	//go:embed templates/package.gohtml
+	pkg string
 )
 
 var (

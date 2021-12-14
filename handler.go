@@ -31,6 +31,10 @@ func modulesHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	mu.RLock()
 	defer mu.RUnlock()
 	switch r.URL.Path {
@@ -42,6 +46,13 @@ func modulesHandler(w http.ResponseWriter, r *http.Request) {
 		m, ok := modules.Find(r.URL.Path)
 		if !ok {
 			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		if r.Form.Get("go-get") == "1" {
+			w.Header().Set("content-type", "text/html")
+			if err := moduleTemplate.Execute(w, m); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 			return
 		}
 		if rest := strings.TrimPrefix(r.URL.Path, m.name()); strings.TrimSuffix(rest, "/") != "" {

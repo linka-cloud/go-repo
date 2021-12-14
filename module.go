@@ -20,6 +20,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"sort"
 	"strings"
 	"sync"
 
@@ -90,6 +91,12 @@ func NewModules(path string) (Modules, error) {
 }
 
 type Modules []*Module
+
+func (m *Modules) Sort() {
+	sort.Slice(*m, func(i, j int) bool {
+		return strings.Compare((*m)[i].Import, (*m)[j].Import) > 0
+	})
+}
 
 func (m *Modules) Find(name string) (*Module, bool) {
 	for _, v := range *m {

@@ -36,6 +36,7 @@ func loadConfig() error {
 	}
 	mu.Lock()
 	modules = conf.Modules
+	modules.Sort()
 	mu.Unlock()
 	go func() {
 		if err := modules.LoadReadme(); err != nil {
@@ -55,13 +56,17 @@ func main() {
 		Use:     "go-repo [config]",
 		Short:   "go-repo serve a minimal go module registry web site",
 		Example: "go-repo config.yml",
-		Args:    cobra.ExactArgs(1),
+		Args:    cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			if l, err := logrus.ParseLevel(level); err == nil {
 				logrus.SetLevel(l)
 			}
+			path := "config.yaml"
+			if len(args) == 1 {
+				path = args[0]
+			}
 			viper.SetConfigType("yaml")
-			viper.SetConfigFile(args[0])
+			viper.SetConfigFile(path)
 			if err := viper.ReadInConfig(); err != nil {
 				logrus.Fatal(err)
 			}
@@ -76,7 +81,7 @@ func main() {
 				logrus.Info("modules reloaded")
 			})
 
-			handler := handlers.LoggingHandler(os.Stdout, http.HandlerFunc(modulesHandler))
+			handler := handlers.CustomLoggingHandler(os.Stdout, http.HandlerFunc(modulesHandler), writeLog)
 			if noAccessLog {
 				handler = http.HandlerFunc(modulesHandler)
 			}
