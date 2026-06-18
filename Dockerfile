@@ -13,9 +13,9 @@
 # limitations under the License.
 
 
-FROM golang:alpine as builder
+FROM golang:alpine AS builder
 
-WORKDIR /go/go.linka.cloud/go-repo
+WORKDIR /src
 
 COPY go.mod .
 
@@ -23,13 +23,13 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o go-repo .
+RUN go build -trimpath -ldflags="-s -w" -o go-repo .
 
 FROM alpine
 
 RUN apk add ca-certificates
 
-COPY --from=builder /go/go.linka.cloud/go-repo/go-repo /usr/bin/
+COPY --from=builder /src/go-repo /usr/bin/
 
 USER nobody
 

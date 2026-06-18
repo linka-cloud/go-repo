@@ -17,10 +17,11 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
-	"sort"
+	"os"
+	"slices"
 	"strings"
 	"sync"
 
@@ -68,7 +69,7 @@ func (m *Module) LoadReadme() error {
 	if res.StatusCode > 300 {
 		return fmt.Errorf("%s: request failed: %s (%d)", m.name(), res.Status, res.StatusCode)
 	}
-	b, err := ioutil.ReadAll(res.Body)
+	b, err := io.ReadAll(res.Body)
 	if err != nil {
 		return err
 	}
@@ -79,7 +80,7 @@ func (m *Module) LoadReadme() error {
 }
 
 func NewModules(path string) (Modules, error) {
-	b, err := ioutil.ReadFile(path)
+	b, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
@@ -93,8 +94,8 @@ func NewModules(path string) (Modules, error) {
 type Modules []*Module
 
 func (m *Modules) Sort() {
-	sort.Slice(*m, func(i, j int) bool {
-		return strings.Compare((*m)[i].Import, (*m)[j].Import) > 0
+	slices.SortFunc(*m, func(a, b *Module) int {
+		return strings.Compare(a.Import, b.Import)
 	})
 }
 

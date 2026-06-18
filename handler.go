@@ -39,7 +39,15 @@ func modulesHandler(w http.ResponseWriter, r *http.Request) {
 	defer mu.RUnlock()
 	switch r.URL.Path {
 	case "/":
-		if err := indexTemplate.Execute(w, modules); err != nil {
+		var mods []*Module
+		for _, m := range modules {
+			// We assume that if the readme is empty, the module is private and should not be listed
+			if m.ReadmeHTML != "" {
+				mods = append(mods, m)
+			}
+		}
+		w.Header().Set("content-type", "text/html")
+		if err := indexTemplate.Execute(w, mods); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	default:

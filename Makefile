@@ -16,7 +16,10 @@ PROJECT = go-repo
 
 IMAGE = linkacloud/$(PROJECT)
 
-VERSION = $(shell git describe --tags `git rev-list --tags --max-count=1` 2> /dev/null || echo "v0.0.0-`git rev-parse --short HEAD`")
+VERSION = $(shell git describe --tags --exact-match --dirty=-dev 2>/dev/null || printf '%s-%s%s\n' \
+      "$$(git describe --tags --abbrev=0 2>/dev/null || echo v0.0.0)" \
+      "$$(git rev-parse --short HEAD)" \
+      "$$(git diff --quiet HEAD -- || echo -dev)")
 
 show-version:
 	@echo $(VERSION)
@@ -24,7 +27,7 @@ show-version:
 docker: docker-build docker-push
 
 docker-build:
-	@docker image build -t $(IMAGE):$(VERSION) -t $(IMAGE):latest .
+	@docker buildx build -t $(IMAGE):$(VERSION) -t $(IMAGE):latest .
 
 docker-push:
-	@docker image push --all-tags $(IMAGE)
+	@docker buildx build --push -t $(IMAGE):$(VERSION) -t $(IMAGE):latest .
